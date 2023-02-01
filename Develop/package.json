@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Chiweenie6/Notes_To_Remember#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "uuid": "^9.0.0"
   }
 }
