@@ -1,8 +1,10 @@
 const express = require("express");
 const path = require("path");
+const util = require("util");
+const fs = require("fs");
 
 const notesDB = require("./db/db.json");
-const randomID = require("./helper/uuid");
+const uuid = require("./helper/uuid");
 
 const PORT = 3001;
 const app = express();
@@ -22,34 +24,132 @@ app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "./public/notes.html"));
 });
 
-// Route to get notes information.
-app.get("/api/notes", (req, res) => res.json(notesDB));
+// Write note to a specific destination
+const saveNote = (toFile, note) =>
+  fs.writeFile(toFile, JSON.stringify(note, null, 4), (err) =>
+    err ? console.error(err) : console.info(`\n Notes added to ${toFile}`)
+  );
 
-// GET route that returns a notes unique id
-app.get("/api/notes/:title", (req, res) => {
-  const findNote = req.params.title.toLowerCase();
-
-  for (let i = 0; i < notesDB.length; i++) {
-    if (findNote === notesDB[i].title.toLowerCase()) {
-      return res.json(notesDB[i]);
+// Find note info and append
+const addNote = (note, fromFile) => {
+  fs.readFile(fromFile, "utf8", (err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const pNote = JSON.parse(info);
+      pNote.push(note);
+      saveNote(fromFile, pNote);
     }
-  }
-  return res.json("No notes found");
+  });
+};
+
+const grabNotes = util.promisify(fs.readFile);
+
+// Get route to get old notes information.
+app.get("/api/notes", (req, res) => {
+  console.info(`${req.method} info from old notes.`);
+  grabNotes("./db/db.json").then((info) => res.json(JSON.parse(info)));
 });
 
-// POST requests for notes
+// POST route for new note
 app.post("/api/notes", (req, res) => {
-  console.info(`${req.method} request to add note recieved.`);
-  let noteInfo;
+  console.info(`${req.method}ed new note ✍️.`);
 
-  if (req.body && req.body.title) {
-    noteInfo = {
-      status: "It worked",
-      data: req.body,
+  const { title, text } = req.body;
+
+  if (req.body) {
+    const newNote = {
+      title,
+      text,
+      note_id: uuid(),
     };
-    res.json(`${req.noteInfo.data.title} note added👍.`);
+
+    addNote(newNote, "./db/db.json");
+    res.json(`HURRAY!`);
   } else {
-    res.json("Request must contain a title.");
+    res.error("Error in note taking.");
+  }
+});
+
+// GET route to get notes information.
+// app.get("/api/notes", (req, res) => res.json(notesDB));
+
+// POST request to add new note
+// app.post("/api/notes", (req, res) => {
+//   console.info(`${req.method} request recieved to add new note.`);
+
+//   const { title, text } = req.body;
+
+//   if (req.body) {
+//     const newNote = {
+//       title,
+//       text,
+//       note_id: uuid(),
+//     };
+
+//     // Find old notes
+//     fs.readFile("./db/db.json", "utf8", (err, data) => {
+//       if (err) {
+//         console.error(err);
+//       } else {
+//         const noteParse = JSON.parse(data);
+
+//         // Add a new note
+//         noteParse.push(newNote);
+
+//         // Write updated notes back to db.json
+//         fs.writeFile(
+//           "./db/db.json",
+//           JSON.stringify(noteParse, null, 4),
+//           (writeErr) =>
+//             writeErr
+//               ? console.error(writeErr)
+//               : console.info("New note added 👍")
+//         );
+//       }
+//     });
+
+//     const response = {
+//       status: "It worked👍",
+//       body: newNote,
+//     };
+//     console.log(response);
+//     res.status(206).json(response);
+//   } else {
+//     res.status(500).json("Could not append note.");
+//   }
+// });
+
+// GET request for a unique id
+// app.get("/api/notes/:note_id", (req, res) => {
+//   if (req.params.note_id) {
+//     console.info(`${req.method} request received to find note`);
+//     const noteId = req.params.note_id;
+//     for (let i = 0; i < notesDB.length; i++) {
+//       const foundNote = notesDB[i];
+//       if (foundNote.note_id === noteId) {
+//         res.json(foundNote);
+//         return;
+//       }
+//     }
+//     res.status(404).send("Note not found");
+//   } else {
+//     res.status(400).send("Note ID not provided");
+//   }
+// });
+
+// DELETE request to remove a note
+app.delete("/api/notes/:note_id", (req, res) => {
+  if (req.body && req.params.note_id) {
+    console.info(`${req.method} request received to delete a note`);
+    const noteId = req.params.note_id;
+    for (let i = 0; i < notesDB.length; i++) {
+      const slectedNote = notesDB[i];
+      if (slectedNote.note_id === noteId) {
+        res.send("DELETE request for note");
+      }
+    }
+    res.json("Note id not found");
   }
 });
 
@@ -61,5 +161,5 @@ app.get("*", (req, res) =>
 );
 
 app.listen(PORT, () => {
-  console.log(`Begin server on port http://localhost:${PORT} 👍.`);
+  console.log(`Listening on port http://localhost:${PORT} 😁.`);
 });
