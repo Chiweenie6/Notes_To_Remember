@@ -1,42 +1,12 @@
 [
     {
-        "title": "Test Title",
-        "text": "Test text",
-        "note_id": "f12"
+        "title": "start",
+        "text": "now",
+        "id": "a4b4"
     },
     {
-        "title": "Hello",
-        "text": "Hey there",
-        "note_id": "9c06"
-    },
-    {
-        "title": "Work",
-        "text": "Work starts @ 7 am",
-        "note_id": "0fd2"
-    },
-    {
-        "title": "Dogs",
-        "text": "Dogs are awesome",
-        "note_id": "45f3"
-    },
-    {
-        "title": "PS5",
-        "text": "Game on!\n",
-        "note_id": "3a5b"
-    },
-    {
-        "title": "Forspoken",
-        "text": "Hurray",
-        "note_id": "27ab"
-    },
-    {
-        "title": "Destiny",
-        "text": "Lets game",
-        "tip_id": "2823"
-    },
-    {
-        "title": "Monster Hunter",
-        "text": "YA YA YA YA",
-        "note_id": "3e85"
+        "title": "you",
+        "text": "there",
+        "id": "765e"
     }
 ]
