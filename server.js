@@ -135,6 +135,6 @@ app.get("*", (req, res) =>
   )
 );
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || 3001, () => {
   console.log(`Listening on port http://localhost:${PORT} 😁.`);
 });
