@@ -106,7 +106,6 @@ app.delete("/api/notes/:id", (req, res) => {
       console.log(err);
       return;
     }
-    // console.log(JSON.parse(data));
   });
 
   const noteId = req.params.id;
