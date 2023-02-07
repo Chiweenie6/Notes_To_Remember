@@ -15,6 +15,9 @@ A note writing and saving application using Express.js.
 ## Description
   A note writing and saving application so the user can keep track and organize upcoming events or even a shopping list. It uses express.js to GET and POST one or more note(s) data to and from a json file. These notes include a title, text and a generated unique id to differentiate the notes from each other.
   
+  link to deployed applicaion:
+  https://sheltered-thicket-46757.herokuapp.com/
+  
 
 ## Usage
   To help the user remember and keep track of things. The user can write a title and then information for the note. This information is then saved and can easily be accessed to help the user remember. 
